@@ -1,0 +1,5 @@
+include HMM.h
+include MultivariateGaussian.h
+include GaussianMixtureModel.h 
+include Observations*.h
+recursive-include eigen/Eigen *
