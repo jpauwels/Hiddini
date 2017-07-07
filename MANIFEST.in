@@ -2,4 +2,5 @@ include HMM.h
 include MultivariateGaussian.h
 include GaussianMixtureModel.h 
 include Observations*.h
+include ConvenienceClasses.h
 recursive-include eigen/Eigen *

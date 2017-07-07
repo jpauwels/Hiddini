@@ -8,12 +8,7 @@ cfg['include_dirs'] = ['eigen']
 #include <pybind11/operators.h>
 #include <pybind11/stl.h>
 #include <pybind11/eigen.h>
-#include "HMM.h"
-#include "ObservationsRaw.h"
-#include "ObservationsDiscrete.h"
-#include "ObservationsGaussian.h"
-#include "ObservationsGMM.h"
-#include "ObservationsTemplateCosSim.h"
+#include "ConvenienceClasses.h"
 
 
 namespace py = pybind11;
@@ -26,10 +21,9 @@ PYBIND11_MODULE(hiddini, m)
 {    
     m.doc() = "Magical Markov models";
     
-    typedef ObservationsRaw<FloatT> ObservationsRaw;
-    typedef HMM<ObservationsRaw> HMMRaw;
+    typedef HMMRaw<FloatT> HMMRaw;
     py::class_<HMMRaw>(m, "HMMRaw")
-        .def("__init__", [](HMMRaw &self, const HMMRaw::ProbMatrix& in_transProbs, const HMMRaw::ProbColumn& in_initProbs) {new (&self) HMMRaw(ObservationsRaw(in_transProbs.rows()), in_transProbs, in_initProbs);}, "transition_probs"_a, "initialisation_probs"_a = HMMRaw::ProbColumn())
+        .def(py::init<const HMMRaw::ProbMatrix&, const HMMRaw::ProbColumn&>(), "transition_probs"_a, "initialisation_probs"_a = HMMRaw::ProbColumn())
         .def("evaluate", &HMMRaw::evaluate)
         .def("decodeMAP", &HMMRaw::decodeMAP, "likelikhoods_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMRaw::decodeMAPWithLattice, "likelikhoods_sequence"_a)
@@ -48,10 +42,10 @@ PYBIND11_MODULE(hiddini, m)
         .def("__call__", &ObservationsDiscrete::operator(), "observed_sequence"_a)
     ;
 
-    typedef HMM<ObservationsDiscrete> HMMDiscrete;
+    typedef HMMDiscrete<FloatT> HMMDiscrete;
     py::class_<HMMDiscrete>(m, "HMMDiscrete")
-        .def("__init__", [](HMMDiscrete &self, const Eigen::Index in_nStates, const Eigen::Index in_nSymbols) {new (&self) HMMDiscrete(ObservationsDiscrete(in_nStates, in_nSymbols));}, "num_states"_a, "num_symbols"_a)
-        .def("__init__", [](HMMDiscrete &self, const HMMDiscrete::ProbMatrix& in_obsProbs, const HMMDiscrete::ProbMatrix& in_transProbs, const HMMDiscrete::ProbColumn& in_initProbs) {new (&self) HMMDiscrete(ObservationsDiscrete(in_obsProbs), in_transProbs, in_initProbs);}, "observation_probs"_a, "transition_probs"_a, "initialisation_probs"_a = HMMDiscrete::ProbColumn())
+        .def(py::init<const Eigen::Index, const Eigen::Index>(), "num_states"_a, "num_symbols"_a)
+        .def(py::init<const ObservationsDiscrete::ProbMatrix&, const ObservationsDiscrete::ProbMatrix&, const ObservationsDiscrete::ProbColumn&>(), "observation_probs"_a, "transition_probs"_a, "initialisation_probs"_a = HMMDiscrete::ProbColumn())
         .def("evaluate", &HMMDiscrete::evaluate, "observations_sequence"_a)
         .def("decodeMAP", &HMMDiscrete::decodeMAP, "observations_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMDiscrete::decodeMAPWithLattice, "observations_sequence"_a)
@@ -73,10 +67,10 @@ PYBIND11_MODULE(hiddini, m)
         .def("__call__", &ObservationsGaussian::operator(), "observed_sequence"_a)
     ;
 
-    typedef HMM<ObservationsGaussian> HMMGaussian;
+    typedef HMMGaussian<FloatT> HMMGaussian;
     py::class_<HMMGaussian>(m, "HMMGaussian")
-        .def("__init__", [](HMMGaussian &self, const Eigen::Index in_nStates, const Eigen::Index in_nDimensions) {new (&self) HMMGaussian(ObservationsGaussian(in_nStates, in_nDimensions));}, "num_states"_a, "num_dimensions"_a)
-        .def("__init__", [](HMMGaussian &self, const ObservationsGaussian::ProbMatrix& in_means, const ObservationsGaussian::ProbTensor& in_covariances, const ObservationsGaussian::ProbMatrix& in_transProbs, const ObservationsGaussian::ProbColumn& in_initProbs) {new (&self) HMMGaussian(ObservationsGaussian(in_means, in_covariances), in_transProbs, in_initProbs);}, "means"_a, "covariances"_a, "transition_probs"_a, "initialisation_probs"_a = HMMGaussian::ProbColumn())
+        .def(py::init<const Eigen::Index, const Eigen::Index>(), "num_states"_a, "num_dimensions"_a)
+        .def(py::init<const ObservationsGaussian::ProbMatrix&, const ObservationsGaussian::ProbTensor&, const ObservationsGaussian::ProbMatrix&, const ObservationsGaussian::ProbColumn&>(), "means"_a, "covariances"_a, "transition_probs"_a, "initialisation_probs"_a = HMMGaussian::ProbColumn())
         .def("evaluate", &HMMGaussian::evaluate, "observations_sequence"_a)
         .def("decodeMAP", &HMMGaussian::decodeMAP, "observations_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMGaussian::decodeMAPWithLattice, "observations_sequence"_a)
@@ -98,10 +92,10 @@ PYBIND11_MODULE(hiddini, m)
         .def("__call__", &ObservationsGMM::operator(), "observed_sequence"_a)
     ;
 
-    typedef HMM<ObservationsGMM> HMMGMM;
+    typedef HMMGMM<FloatT> HMMGMM;
     py::class_<HMMGMM>(m, "HMMGMM")
-        .def("__init__", [](HMMGMM &self, const Eigen::Index in_nStates, const Eigen::Index in_nDimensions, const Eigen::Index in_nComponents) {new (&self) HMMGMM(ObservationsGMM(in_nStates, in_nDimensions, in_nComponents));}, "num_states"_a, "num_dimensions"_a, "num_components"_a)
-        .def("__init__", [](HMMGMM &self, const std::vector<ObservationsGMM::ProbMatrix>& in_mixMeans, const std::vector<ObservationsGMM::ProbTensor>& in_mixCovariances, const std::vector<ObservationsGMM::ProbRow>& in_mixCoefficients, const ObservationsGMM::ProbMatrix& in_transProbs, const ObservationsGMM::ProbColumn& in_initProbs) {new (&self) HMMGMM(ObservationsGMM(in_mixMeans, in_mixCovariances, in_mixCoefficients), in_transProbs, in_initProbs);}, "mix_means"_a, "mix_covariances"_a, "mix_coefficients"_a, "transition_probs"_a, "initialisation_probs"_a = HMMGMM::ProbColumn())
+        .def(py::init<const Eigen::Index, const Eigen::Index, const Eigen::Index>(), "num_states"_a, "num_dimensions"_a, "num_components"_a)
+        .def(py::init<const std::vector<ObservationsGMM::ProbMatrix>&, const std::vector<ObservationsGMM::ProbTensor>&, const std::vector<ObservationsGMM::ProbRow>&, const ObservationsGMM::ProbMatrix&, const ObservationsGMM::ProbColumn&>(), "mix_means"_a, "mix_covariances"_a, "mix_coefficients"_a, "transition_probs"_a, "initialisation_probs"_a = HMMGMM::ProbColumn())
         .def("evaluate", &HMMGMM::evaluate, "observations_sequence"_a)
         .def("decodeMAP", &HMMGMM::decodeMAP, "observations_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMGMM::decodeMAPWithLattice, "observations_sequence"_a)
@@ -122,9 +116,9 @@ PYBIND11_MODULE(hiddini, m)
         .def("__call__", &ObservationsTemplateCosSim::operator(), "observed_sequence"_a)
     ;
 
-    typedef HMM<ObservationsTemplateCosSim> HMMTemplateCosSim;
+    typedef HMMTemplateCosSim<FloatT> HMMTemplateCosSim;
     py::class_<HMMTemplateCosSim>(m, "HMMTemplateCosSim")
-        .def("__init__", [](HMMTemplateCosSim &self, const HMMTemplateCosSim::ProbMatrix& in_templates, const HMMTemplateCosSim::ProbMatrix& in_transProbs, const HMMTemplateCosSim::ProbColumn& in_initProbs) {new (&self) HMMTemplateCosSim(ObservationsTemplateCosSim(in_templates), in_transProbs, in_initProbs);}, "templates"_a, "transition_probs"_a, "initialisation_probs"_a = HMMTemplateCosSim::ProbColumn())
+        .def(py::init<const ObservationsTemplateCosSim::ProbMatrix&, const ObservationsTemplateCosSim::ProbMatrix&, const ObservationsTemplateCosSim::ProbColumn&>(), "templates"_a, "transition_probs"_a, "initialisation_probs"_a = HMMTemplateCosSim::ProbColumn())
         .def("evaluate", &HMMTemplateCosSim::evaluate)
         .def("decodeMAP", &HMMTemplateCosSim::decodeMAP, "observations_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMTemplateCosSim::decodeMAPWithLattice, "observations_sequence"_a)
