@@ -124,7 +124,7 @@ PYBIND11_MODULE(hiddini, m)
 
     typedef HMM<ObservationsTemplateCosSim> HMMTemplateCosSim;
     py::class_<HMMTemplateCosSim>(m, "HMMTemplateCosSim")
-        .def("__init__", [](HMMTemplateCosSim &self, const HMMTemplateCosSim::ProbMatrix& in_templates, const HMMTemplateCosSim::ProbMatrix& in_transProbs, const HMMTemplateCosSim::ProbColumn& in_initProbs) {new (&self) HMMTemplateCosSim(ObservationsTemplateCosSim(in_templates));}, "templates"_a, "transition_probs"_a, "initialisation_probs"_a = HMMTemplateCosSim::ProbColumn())
+        .def("__init__", [](HMMTemplateCosSim &self, const HMMTemplateCosSim::ProbMatrix& in_templates, const HMMTemplateCosSim::ProbMatrix& in_transProbs, const HMMTemplateCosSim::ProbColumn& in_initProbs) {new (&self) HMMTemplateCosSim(ObservationsTemplateCosSim(in_templates), in_transProbs, in_initProbs);}, "templates"_a, "transition_probs"_a, "initialisation_probs"_a = HMMTemplateCosSim::ProbColumn())
         .def("evaluate", &HMMTemplateCosSim::evaluate)
         .def("decodeMAP", &HMMTemplateCosSim::decodeMAP, "observations_sequence"_a)
         .def("decodeMAP_with_lattice", &HMMTemplateCosSim::decodeMAPWithLattice, "observations_sequence"_a)
