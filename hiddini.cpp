@@ -22,9 +22,9 @@ using namespace hiddini;
 
 typedef double FloatT;
 
-PYBIND11_PLUGIN(hiddini) {
-    
-    py::module m("hiddini", "Hidden Markov models");
+PYBIND11_MODULE(hiddini, m)
+{    
+    m.doc() = "Magical Markov models";
     
     typedef ObservationsRaw<FloatT> ObservationsRaw;
     typedef HMM<ObservationsRaw> HMMRaw;
@@ -59,8 +59,8 @@ PYBIND11_PLUGIN(hiddini) {
         .def("decodePMAP_with_lattice", &HMMDiscrete::decodePMAPWithLattice, "observations_sequence"_a)
         .def("decodePV", &HMMDiscrete::decodePV, "observations_sequence"_a)
         .def("decodePV_with_lattice", &HMMDiscrete::decodePVWithLattice, "observations_sequence"_a)
-        .def("decodeMAP_with_medianOPC", &HMMDiscrete::decodeMAPWithMedianOPC, "likelikhoods_sequence"_a)
-        .def("decode_with_PPD", &HMMDiscrete::decodeWithPPD, "likelikhoods_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
+        .def("decodeMAP_with_medianOPC", &HMMDiscrete::decodeMAPWithMedianOPC, "observations_sequence"_a)
+        .def("decode_with_PPD", &HMMDiscrete::decodeWithPPD, "observations_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
         .def("train", (void (HMMDiscrete::*)(const HMMDiscrete::ObsSeqType&, const Eigen::Index, const FloatT, const bool)) &HMMDiscrete::train, "observations_sequence"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("train", (void (HMMDiscrete::*)(const std::vector<HMMDiscrete::ObsSeqType>&, const Eigen::Index, const FloatT, const bool)) &HMMDiscrete::train, "observations_sequence_list"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("generate", &HMMDiscrete::generate, "sequence_length"_a)
@@ -84,8 +84,8 @@ PYBIND11_PLUGIN(hiddini) {
         .def("decodePMAP_with_lattice", &HMMGaussian::decodePMAPWithLattice, "observations_sequence"_a)
         .def("decodePV", &HMMGaussian::decodePV, "observations_sequence"_a)
         .def("decodePV_with_lattice", &HMMGaussian::decodePVWithLattice, "observations_sequence"_a)
-        .def("decodeMAP_with_medianOPC", &HMMGaussian::decodeMAPWithMedianOPC, "likelikhoods_sequence"_a)
-        .def("decode_with_PPD", &HMMGaussian::decodeWithPPD, "likelikhoods_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
+        .def("decodeMAP_with_medianOPC", &HMMGaussian::decodeMAPWithMedianOPC, "observations_sequence"_a)
+        .def("decode_with_PPD", &HMMGaussian::decodeWithPPD, "observations_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
         .def("train", (void (HMMGaussian::*)(const HMMGaussian::ObsSeqType&, const Eigen::Index, const FloatT, const bool)) &HMMGaussian::train, "observations_sequence"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("train", (void (HMMGaussian::*)(const std::vector<HMMGaussian::ObsSeqType>&, const Eigen::Index, const FloatT, const bool)) &HMMGaussian::train, "observations_sequence_list"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("generate", &HMMGaussian::generate, "sequence_length"_a)
@@ -109,8 +109,8 @@ PYBIND11_PLUGIN(hiddini) {
         .def("decodePMAP_with_lattice", &HMMGMM::decodePMAPWithLattice, "observations_sequence"_a)
         .def("decodePV", &HMMGMM::decodePV, "observations_sequence"_a)
         .def("decodePV_with_lattice", &HMMGMM::decodePVWithLattice, "observations_sequence"_a)
-        .def("decodeMAP_with_medianOPC", &HMMGMM::decodeMAPWithMedianOPC, "likelikhoods_sequence"_a)
-        .def("decode_with_PPD", &HMMGMM::decodeWithPPD, "likelikhoods_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
+        .def("decodeMAP_with_medianOPC", &HMMGMM::decodeMAPWithMedianOPC, "observations_sequence"_a)
+        .def("decode_with_PPD", &HMMGMM::decodeWithPPD, "observations_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
         .def("train", (void (HMMGMM::*)(const HMMGMM::ObsSeqType&, const Eigen::Index, const FloatT, const bool)) &HMMGMM::train, "observations_sequence"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("train", (void (HMMGMM::*)(const std::vector<HMMGMM::ObsSeqType>&, const Eigen::Index, const FloatT, const bool)) &HMMGMM::train, "observations_sequence_list"_a, "max_iterations"_a, "tolerance"_a, "verbose"_a=true)
         .def("generate", &HMMGMM::generate, "sequence_length"_a)
@@ -132,8 +132,8 @@ PYBIND11_PLUGIN(hiddini) {
         .def("decodePMAP_with_lattice", &HMMTemplateCosSim::decodePMAPWithLattice, "observations_sequence"_a)
         .def("decodePV", &HMMTemplateCosSim::decodePV, "observations_sequence"_a)
         .def("decodePV_with_lattice", &HMMTemplateCosSim::decodePVWithLattice, "observations_sequence"_a)
-        .def("decodeMAP_with_medianOPC", &HMMTemplateCosSim::decodeMAPWithMedianOPC, "likelikhoods_sequence"_a)
-        .def("decode_with_PPD", &HMMTemplateCosSim::decodeWithPPD, "likelikhoods_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
+        .def("decodeMAP_with_medianOPC", &HMMTemplateCosSim::decodeMAPWithMedianOPC, "observations_sequence"_a)
+        .def("decode_with_PPD", &HMMTemplateCosSim::decodeWithPPD, "observations_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
     ;
     
 
@@ -142,5 +142,4 @@ PYBIND11_PLUGIN(hiddini) {
 #else
     m.attr("__version__") = py::str("dev");
 #endif
-    return m.ptr();
 }
