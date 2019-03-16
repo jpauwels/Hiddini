@@ -5,7 +5,7 @@ import setuptools
 import glob
 import os.path
 
-__version__ = '0.9'
+__version__ = '0.9.1'
 
 
 class get_pybind_include(object):
@@ -101,7 +101,7 @@ setup(
     description='Magical Markov models',
     long_description='',
     ext_modules=ext_modules,
-    install_requires=['pybind11>=2.1.0'],
+    install_requires=['pybind11>=2.2.0'],
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
 )
