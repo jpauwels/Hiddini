@@ -29,6 +29,8 @@ namespace hiddini
         {
         }
         
+        // @param   in_obsProbSequence [nStates x nObservations]
+        // @return  [nStates x nObservations]
         const ProbMatrix operator()(const ObsSeqType& in_obsProbSequence) const
         {
             return in_obsProbSequence;

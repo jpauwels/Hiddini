@@ -39,8 +39,16 @@ namespace hiddini
         {
         }
         
+        // @param   in_observationSequence [nSymbols x nObservations]
+        // @return  [nStates x nObservations]
         const ProbMatrix operator()(const ObsSeqType& in_observationSequence) const
         {
+            if (in_observationSequence.rows() != m_nSymbols)
+            {
+                std::ostringstream errorMessage;
+                errorMessage << "The number of observed symbols should be " << m_nSymbols << " instead of " << in_observationSequence.rows();
+                throw std::length_error(errorMessage.str());
+            }
             return m_obsPmf(Eigen::placeholders::all, in_observationSequence);
         }
         

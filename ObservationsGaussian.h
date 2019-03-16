@@ -49,8 +49,16 @@ namespace hiddini
             }
         }
         
+        // @param   in_observationSequence [nDimensions x nObservations]
+        // @return  [nStates x nObservations]
         const ProbMatrix operator()(const ObsSeqType& in_observationSequence) const
         {
+            if (in_observationSequence.rows() != m_nDimensions)
+            {
+                std::ostringstream errorMessage;
+                errorMessage << "The dimension of the observations should be " << m_nDimensions << " instead of " << in_observationSequence.rows();
+                throw std::length_error(errorMessage.str());
+            }
             ProbMatrix obsLikelihoods = ProbMatrix::Zero(m_nStates, in_observationSequence.cols());
             for (Eigen::Index iState = 0; iState < m_nStates; ++iState)
             {
