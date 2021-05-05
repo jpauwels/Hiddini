@@ -15,6 +15,9 @@ cfg['include_dirs'] = ['eigen']
 #include "ObservationsGMM.h"
 #include "ObservationsTemplateCosSim.h"
 
+#define STRINGIFY(x) #x
+#define MACRO_STRINGIFY(x) STRINGIFY(x)
+
 
 namespace py = pybind11;
 using namespace pybind11::literals;
@@ -135,11 +138,10 @@ PYBIND11_MODULE(hiddini, m)
         .def("decodeMAP_with_medianOPC", &HMMTemplateCosSim::decodeMAPWithMedianOPC, "observations_sequence"_a)
         .def("decode_with_PPD", &HMMTemplateCosSim::decodeWithPPD, "observations_sequence"_a, "output_decoder"_a="MAP", "additional_decoder"_a="PMAP")
     ;
-    
 
 #ifdef VERSION_INFO
-    m.attr("__version__") = py::str(VERSION_INFO);
+    m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
 #else
-    m.attr("__version__") = py::str("dev");
+    m.attr("__version__") = "dev";
 #endif
 }
