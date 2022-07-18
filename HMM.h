@@ -10,6 +10,7 @@
 #define HMM_h
 
 #include <Eigen/Dense>
+#include <iostream>
 #include <tuple>
 #include <vector>
 #include <algorithm>
